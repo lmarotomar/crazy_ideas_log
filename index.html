@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Crazy Ideas Log — EN/ES</title>
+  <!-- Brand fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:wght@400;700&family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg:#fdfdfd;
+      --fg:#333333;
+      --muted:#666666;
+      --accent:#2e7d64;   /* primary green */
+      --accent2:#8c8148;  /* gold/earth tone */
+      --btn:#00ff99;      /* button/link bright green */
+      --btn2:#00cc7a;     /* secondary accent */
+      --card:#ffffff;
+      --border:#e6e3dd;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; padding:24px;
+      font-family:'Libre Baskerville',serif;
+      background:var(--bg); color:var(--fg);
+    }
+    header{display:flex;align-items:center;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+    h1{
+      font-size:clamp(20px,3vw,28px);margin:0;
+      font-family:'Poppins',sans-serif; font-weight:700; letter-spacing:.2px;
+    }
+    .badge{font-size:12px;color:#fff;background:var(--accent);padding:4px 8px;border-radius:999px}
+    .card{
+      background:var(--card); border:1px solid var(--border); border-radius:14px; padding:16px;
+      box-shadow:0 1px 2px rgba(0,0,0,0.04);
+    }
+    .controls{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+    .controls > .row{display:grid;grid-template-columns:1.2fr .8fr .8fr;gap:12px}
+    label{font-size:12px;color:var(--muted);display:block;margin-bottom:6px}
+    input, textarea{
+      width:100%; padding:10px 12px; border-radius:10px; border:1px solid var(--border);
+      background:#fff; color:var(--fg); font-size:14px;
+      font-family:'Libre Baskerville',serif;
+    }
+    textarea{min-height:48px;resize:vertical}
+    button{
+      border:1px solid var(--btn2); background:var(--btn); color:#000;
+      padding:10px 14px; border-radius:10px; cursor:pointer; font-weight:700; font-family:'Poppins',sans-serif;
+      transition:transform .02s ease-in-out;
+    }
+    button:hover{transform:translateY(-1px)}
+    button.primary{background:var(--accent); color:#fff; border-color:var(--accent)}
+    .actions{display:flex; gap:8px; align-items:center; flex-wrap:wrap}
+    table{width:100%; border-collapse:collapse; margin-top:8px}
+    th, td{border-bottom:1px solid var(--border); padding:10px; text-align:left; vertical-align:top}
+    th{font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.04em}
+    tr:hover td{background:#fcfbf8}
+    .muted{color:var(--muted)}
+    .right{margin-left:auto}
+    .hint{font-size:12px;color:var(--muted);margin-top:6px}
+    .footer{margin-top:18px;font-size:12px;color:var(--muted)}
+    .accent{color:var(--accent)}
+    .accent2{color:var(--accent2)}
+    @media (max-width: 720px){
+      .controls{grid-template-columns:1fr}
+      .controls > .row{grid-template-columns:1fr}
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1 id="title">Crazy Ideas Log</h1>
+    <span class="badge" id="langBadge">EN</span>
+    <div class="right actions">
+      <button id="langToggle" title="Switch language">ES</button>
+    </div>
+  </header>
+
+  <section class="card">
+    <div class="controls">
+      <div class="row">
+        <div>
+          <label id="lblIdea">1) Idea / Thought</label>
+          <input id="idea" placeholder="e.g., 'BioAI: AI‑assisted metagenomics for food safety dashboards'">
+        </div>
+        <div>
+          <label id="lblArea">2) Area of Impact</label>
+          <input id="area" placeholder="e.g., Food Microbiology, Marketing, Logistics, Trading">
+        </div>
+        <div>
+          <label id="lblDateBrain">3) Date Brain (YYYY‑MM‑DD)</label>
+          <input id="dateBrain" type="date">
+        </div>
+      </div>
+      <div class="row">
+        <div>
+          <label id="lblDateShared">4) Date Shared (YYYY‑MM‑DD)</label>
+          <input id="dateShared" type="date">
+        </div>
+        <div>
+          <label id="lblActions">5) AI Specific Actions</label>
+          <textarea id="actions" placeholder="Short, concrete steps for AI: 'Draft protocol template, generate qPCR primer checklist, build HTML form...'"></textarea>
+        </div>
+        <div>
+          <label id="lblConsiderations">6) AI Considerations</label>
+          <textarea id="considerations" placeholder="Risks, constraints, ethics, data needs, IP, compute, timelines..."></textarea>
+        </div>
+      </div>
+    </div>
+    <div class="actions">
+      <button class="primary" id="addBtn">Add Idea</button>
+      <button id="todayBtn">Set today</button>
+      <button id="exportBtn">Export CSV</button>
+      <button id="importBtn">Import CSV</button>
+      <input type="file" id="fileInput" accept=".csv" style="display:none">
+      <span class="hint" id="hint">Data is stored locally in your browser (localStorage). You can also export/import CSV.</span>
+    </div>
+    <table id="ideasTable" aria-describedby="ideas-description">
+      <thead>
+        <tr id="theadRow">
+          <th>Idea / Thought</th>
+          <th>Area of Impact</th>
+          <th>Date Brain</th>
+          <th>Date Shared</th>
+          <th>AI Specific Actions</th>
+          <th>AI Considerations</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+    <p id="ideas-description" class="hint">
+      Tip: Use concise entries. We will keep a master copy here and you can back it up via CSV.
+    </p>
+  </section>
+
+  <p class="footer" id="footer">Made for rapid capture. Type, click <span class="accent">Add Idea</span>, then <span class="accent2">Export CSV</span> to back up.</p>
+
+<script>
+(function(){
+  const LS_KEY = "crazy_ideas_log_v1";
+  const LANG_KEY = "crazy_ideas_lang";
+  const $ = (id) => document.getElementById(id);
+
+  const idea = $("idea");
+  const area = $("area");
+  const dateBrain = $("dateBrain");
+  const dateShared = $("dateShared");
+  const actions = $("actions");
+  const considerations = $("considerations");
+  const tableBody = document.querySelector("#ideasTable tbody");
+  const addBtn = $("addBtn");
+  const todayBtn = $("todayBtn");
+  const exportBtn = $("exportBtn");
+  const importBtn = $("importBtn");
+  const fileInput = $("fileInput");
+  const langToggle = $("langToggle");
+  const langBadge = $("langBadge");
+
+  // Text resources
+  const T = {
+    EN: {
+      docTitle: "Crazy Ideas Log — EN/ES",
+      title: "Crazy Ideas Log",
+      labels: {
+        idea:"1) Idea / Thought",
+        area:"2) Area of Impact",
+        dateBrain:"3) Date Brain (YYYY‑MM‑DD)",
+        dateShared:"4) Date Shared (YYYY‑MM‑DD)",
+        actions:"5) AI Specific Actions",
+        considerations:"6) AI Considerations"
+      },
+      placeholders: {
+        idea:"e.g., 'BioAI: AI‑assisted metagenomics for food safety dashboards'",
+        area:"e.g., Food Microbiology, Marketing, Logistics, Trading",
+        actions:"Short, concrete steps for AI: 'Draft protocol template, generate qPCR primer checklist, build HTML form...'",
+        considerations:"Risks, constraints, ethics, data needs, IP, compute, timelines..."
+      },
+      buttons: { add:"Add Idea", today:"Set today", export:"Export CSV", import:"Import CSV" },
+      tableHead:["Idea / Thought","Area of Impact","Date Brain","Date Shared","AI Specific Actions","AI Considerations"],
+      hint:"Data is stored locally in your browser (localStorage). You can also export/import CSV.",
+      tip:"Tip: Use concise entries. We will keep a master copy here and you can back it up via CSV.",
+      footer:`Made for rapid capture. Type, click <span class="accent">Add Idea</span>, then <span class="accent2">Export CSV</span> to back up.`,
+      deleteConfirm:"Delete this row?",
+      missingIdea:"Please enter the Idea / Thought."
+    },
+    ES: {
+      docTitle: "Bitácora de Ideas Locas — EN/ES",
+      title: "Bitácora de Ideas Locas",
+      labels: {
+        idea:"1) Idea / Pensamiento",
+        area:"2) Área de impacto",
+        dateBrain:"3) Fecha de origen (AAAA‑MM‑DD)",
+        dateShared:"4) Fecha compartida (AAAA‑MM‑DD)",
+        actions:"5) Acciones específicas con IA",
+        considerations:"6) Consideraciones de IA"
+      },
+      placeholders: {
+        idea:"p. ej., 'BioAI: metagenómica asistida por IA para tableros de inocuidad alimentaria'",
+        area:"p. ej., Microbiología de Alimentos, Marketing, Logística, Trading",
+        actions:"Pasos concretos para la IA: 'Borrador de protocolo, checklist de primers qPCR, construir formulario HTML...'",
+        considerations:"Riesgos, limitaciones, ética, datos necesarios, PI, cómputo, tiempos..."
+      },
+      buttons: { add:"Agregar idea", today:"Poner hoy", export:"Exportar CSV", import:"Importar CSV" },
+      tableHead:["Idea / Pensamiento","Área de impacto","Fecha de origen","Fecha compartida","Acciones específicas con IA","Consideraciones de IA"],
+      hint:"Los datos se guardan localmente en tu navegador (localStorage). También puedes exportar/importar CSV.",
+      tip:"Consejo: Usa entradas concisas. Mantendremos una copia maestra aquí y puedes respaldarla vía CSV.",
+      footer:`Hecho para capturar rápido. Escribe, haz clic en <span class="accent">Agregar idea</span> y luego <span class="accent2">Exportar CSV</span> para respaldar.`,
+      deleteConfirm:"¿Eliminar esta fila?",
+      missingIdea:"Por favor, ingresa la Idea / Pensamiento."
+    }
+  };
+
+  function getLang(){
+    const v = localStorage.getItem(LANG_KEY);
+    return (v === "ES" || v === "EN") ? v : "EN";
+  }
+  function setLang(lang){
+    localStorage.setItem(LANG_KEY, lang);
+    applyLang(lang);
+  }
+  function applyLang(lang){
+    const dict = T[lang];
+    document.title = dict.docTitle;
+    $("title").textContent = dict.title;
+    $("lblIdea").textContent = dict.labels.idea;
+    $("lblArea").textContent = dict.labels.area;
+    $("lblDateBrain").textContent = dict.labels.dateBrain;
+    $("lblDateShared").textContent = dict.labels.dateShared;
+    $("lblActions").textContent = dict.labels.actions;
+    $("lblConsiderations").textContent = dict.labels.considerations;
+    idea.placeholder = dict.placeholders.idea;
+    area.placeholder = dict.placeholders.area;
+    actions.placeholder = dict.placeholders.actions;
+    considerations.placeholder = dict.placeholders.considerations;
+    $("addBtn").textContent = dict.buttons.add;
+    $("todayBtn").textContent = dict.buttons.today;
+    $("exportBtn").textContent = dict.buttons.export;
+    $("importBtn").textContent = dict.buttons.import;
+    langToggle.textContent = (lang === "EN" ? "ES" : "EN");
+    langBadge.textContent = lang;
+    // table head
+    const theadRow = document.getElementById("theadRow");
+    theadRow.innerHTML = "";
+    dict.tableHead.forEach(h=>{
+      const th = document.createElement("th");
+      th.textContent = h;
+      theadRow.appendChild(th);
+    });
+    // hint, tip, footer
+    $("hint").textContent = dict.hint;
+    $("ideas-description").textContent = dict.tip;
+    $("footer").innerHTML = dict.footer;
+  }
+
+  function load(){
+    try{
+      const raw = localStorage.getItem(LS_KEY);
+      const data = raw ? JSON.parse(raw) : [];
+      return Array.isArray(data) ? data : [];
+    }catch(_){ return []; }
+  }
+  function save(rows){ localStorage.setItem(LS_KEY, JSON.stringify(rows)); }
+
+  function render(){
+    const rows = load();
+    tableBody.innerHTML = "";
+    rows.forEach((r, idx) => {
+      const tr = document.createElement("tr");
+      const cells = [r.idea, r.area, r.dateBrain, r.dateShared, r.actions, r.considerations];
+      cells.forEach((c)=>{
+        const td = document.createElement("td");
+        td.textContent = c || "";
+        tr.appendChild(td);
+      });
+      tr.addEventListener("dblclick", () => {
+        if(confirm(T[getLang()].deleteConfirm)){
+          const updated = load();
+          updated.splice(idx,1);
+          save(updated);
+          render();
+        }
+      });
+      tableBody.appendChild(tr);
+    });
+  }
+
+  function add(){
+    const row = {
+      idea: (idea.value||"").trim(),
+      area: (area.value||"").trim(),
+      dateBrain: (dateBrain.value||"").trim(),
+      dateShared: (dateShared.value||"").trim(),
+      actions: (actions.value||"").trim(),
+      considerations: (considerations.value||"").trim()
+    };
+    if(!row.idea){
+      alert(T[getLang()].missingIdea);
+      return;
+    }
+    const rows = load();
+    rows.unshift(row);
+    save(rows);
+    render();
+    idea.value = ""; area.value = ""; actions.value = ""; considerations.value = "";
+  }
+
+  function setToday(){
+    const today = new Date();
+    const yyyy = today.getFullYear();
+    const mm = String(today.getMonth()+1).padStart(2,"0");
+    const dd = String(today.getDate()).padStart(2,"0");
+    const iso = `${yyyy}-${mm}-${dd}`;
+    if(!dateBrain.value) dateBrain.value = iso;
+    if(!dateShared.value) dateShared.value = iso;
+  }
+
+  function toCSV(rows){
+    const headersEN = T.EN.tableHead;
+    const escape = (s)=>`"${String(s??"").replace(/"/g,'""')}"`;
+    const lines = [headersEN.map(escape).join(",")];
+    rows.forEach(r=>{
+      lines.push([r.idea,r.area,r.dateBrain,r.dateShared,r.actions,r.considerations].map(escape).join(","));
+    });
+    return lines.join("\n");
+  }
+
+  function fromCSV(text){
+    const lines = text.split(/\r?\n/).filter(Boolean);
+    if(lines.length===0) return [];
+    const out = [];
+    for(let i=1;i<lines.length;i++){
+      const line = lines[i];
+      const cells = [];
+      let cur = "", inQ = false;
+      for(let j=0;j<line.length;j++){
+        const ch = line[j];
+        if(inQ){
+          if(ch === '"'){
+            if(line[j+1] === '"'){ cur += '"'; j++; }
+            else { inQ = false; }
+          }else{ cur += ch; }
+        }else{
+          if(ch === '"'){ inQ = true; }
+          else if(ch === ','){ cells.push(cur); cur=""; }
+          else { cur += ch; }
+        }
+      }
+      cells.push(cur);
+      const [idea, area, dateBrain, dateShared, actions, considerations] = cells;
+      out.push({idea, area, dateBrain, dateShared, actions, considerations});
+    }
+    return out;
+  }
+
+  addBtn.addEventListener("click", add);
+  todayBtn.addEventListener("click", setToday);
+  exportBtn.addEventListener("click", ()=>{
+    const rows = load();
+    const blob = new Blob([toCSV(rows)], {type:"text/csv"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = "crazy_ideas_log.csv"; a.click();
+    URL.revokeObjectURL(url);
+  });
+  importBtn.addEventListener("click", ()=> fileInput.click());
+  fileInput.addEventListener("change", (e)=>{
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const rows = fromCSV(reader.result);
+      const existing = load();
+      save([...rows, ...existing]);
+      render();
+    };
+    reader.readAsText(file);
+  });
+
+  // init
+  const lang = getLang();
+  applyLang(lang);
+  render();
+  setToday();
+
+  langToggle.addEventListener("click", ()=>{
+    const next = getLang()==="EN" ? "ES" : "EN";
+    setLang(next);
+  });
+})();
+</script>
+</body>
+</html>
